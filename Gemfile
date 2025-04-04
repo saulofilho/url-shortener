@@ -35,7 +35,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
   gem 'factory_bot_rails'
-  gem 'pry', '~> 0.14.2'
+  gem 'pry', '~> 0.15.2'
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 7.0.0'
   gem 'rswag-specs'
