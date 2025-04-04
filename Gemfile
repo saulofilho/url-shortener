@@ -17,8 +17,16 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem 'solid_cable'
+gem 'solid_cache'
+gem 'solid_queue'
+
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem 'thruster', require: false
+
+# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+gem 'kamal', require: false
 
 gem 'activerecord-import'
 gem 'bcrypt', '~> 3.1.7'
