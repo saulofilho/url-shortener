@@ -1,0 +1,275 @@
+---
+openapi: 3.0.3
+info:
+  title: URL Shortener
+  version: v1
+paths:
+  "/v1/login":
+    post:
+      summary: User login
+      tags:
+      - Authentication
+      operationId: authentication_login
+      parameters: []
+      responses:
+        '200':
+          description: login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication_response:
+                    "$ref": "#/components/schemas/authentication_response"
+                required:
+                - authentication_response
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid email or password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/authentication_login"
+  "/v1/logout":
+    delete:
+      summary: User logout
+      tags:
+      - Authentication
+      operationId: authentication_logout
+      responses:
+        '204':
+          description: logout successful
+        '401':
+          description: unauthorized due to expired token
+        '404':
+          description: user not found
+  "/v1/urls":
+    post:
+      summary: create short URL
+      tags:
+      - Urls
+      operationId: url_create
+      parameters: []
+      responses:
+        '201':
+          description: url created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    "$ref": "#/components/schemas/url_response"
+                required:
+                - url
+        '422':
+          description: unprocessable entity
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Original URL is required
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token is missing or invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/url_create"
+  "/v1/urls/{short_url}":
+    get:
+      summary: Retrieve original URL
+      tags:
+      - Urls
+      operationId: url_show
+      parameters:
+      - name: short_url
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '302':
+          description: redirected to original URL
+        '404':
+          description: URL not found
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token is missing or invalid
+  "/v1/urls/{short_url}/accesses":
+    get:
+      summary: Retrieve access history for short URL
+      tags:
+      - Urls
+      operationId: url_accesses
+      parameters:
+      - name: short_url
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: retrieves access history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accesses:
+                    "$ref": "#/components/schemas/accesses"
+                required:
+                - accesses
+        '404':
+          description: URL not found
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Token is missing or invalid
+servers:
+- url: "{defaultHost}"
+  variables:
+    defaultHost:
+      default: ''
+components:
+  schemas:
+    error_response:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/exception"
+      required:
+      - error
+    exception:
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+    url:
+      type: object
+      properties:
+        original_url:
+          type: string
+        short_url:
+          type: string
+        access_count:
+          type: integer
+        expiration_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    url_create:
+      type: object
+      properties:
+        original_url:
+          type: string
+    url_response:
+      type: object
+      properties:
+        original_url:
+          type: string
+        short_url:
+          type: string
+        access_count:
+          type: integer
+          nullable: true
+        expiration_date:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    accesses:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          url_id:
+            type: integer
+            nullable: true
+          access_count:
+            type: integer
+            nullable: true
+          accessed_at:
+            type: string
+            format: date-time
+            nullable: true
+          created_at:
+            type: string
+            format: date-time
+          updated_at:
+            type: string
+            format: date-time
+    authentication_login:
+      type: object
+      properties:
+        password:
+          type: string
+        email:
+          type: string
+    authentication_response:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            email:
+              type: string
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+    basic_auth:
+      type: http
+      scheme: basic
