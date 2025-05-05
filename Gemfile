@@ -47,7 +47,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 7.0.0'
   gem 'rswag-specs'
-  gem 'rubocop', '~> 1.54.1', require: false
+  gem 'rubocop', '~> 1.75.5', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rails-omakase', require: false
   gem 'rubocop-rspec', require: false
