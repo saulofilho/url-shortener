@@ -45,7 +45,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'pry', '~> 0.14.2'
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 7.0.0'
+  gem 'rspec-rails', '~> 8.0.0'
   gem 'rswag-specs'
   gem 'rubocop', '~> 1.54.1', require: false
   gem 'rubocop-rails', require: false
